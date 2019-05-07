@@ -12,11 +12,16 @@ var vendor = {
 	"moment-timezone.js" : "node_modules/moment-timezone/builds/moment-timezone-with-data.js",
 	"weather-icons.css": "node_modules/weathericons/css/weather-icons.css",
 	"weather-icons-wind.css": "node_modules/weathericons/css/weather-icons-wind.css",
+<<<<<<< HEAD
 	"font-awesome.css": "node_modules/font-awesome/css/font-awesome.min.css",
 	"nunjucks.js": "node_modules/nunjucks/browser/nunjucks.min.js",
 	"jsforce.js": "node_modules/jsforce/build/jsforce.min.js",
 	"lodash.js": "node_modules/lodash/lodash.min.js",
 	"chartjs-plugin-datalabels":"node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.min.js"
+=======
+	"font-awesome.css": "css/font-awesome.css",
+	"nunjucks.js": "node_modules/nunjucks/browser/nunjucks.min.js"
+>>>>>>> b508a629e8a727358f1b88e3c7df842d14669ec4
 };
 
 if (typeof module !== "undefined"){module.exports = vendor;}

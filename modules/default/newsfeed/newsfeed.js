@@ -187,7 +187,7 @@ Module.register("newsfeed",{
 				fullArticle.style.top = "0";
 				fullArticle.style.left = "0";
 				fullArticle.style.border = "none";
-				fullArticle.src = typeof this.newsItems[this.activeItem].url  === "string" ? this.newsItems[this.activeItem].url : this.newsItems[this.activeItem].url.href;
+				fullArticle.src = this.getActiveItemURL()
 				fullArticle.style.zIndex = 1;
 				wrapper.appendChild(fullArticle);
 			}
@@ -206,6 +206,10 @@ Module.register("newsfeed",{
 		}
 
 		return wrapper;
+	},
+
+	getActiveItemURL: function() {
+		return typeof this.newsItems[this.activeItem].url  === "string" ? this.newsItems[this.activeItem].url : this.newsItems[this.activeItem].url.href;
 	},
 
 	/* registerFeeds()
@@ -382,6 +386,24 @@ Module.register("newsfeed",{
 			this.resetDescrOrFullArticleAndTimer();
 			Log.info(this.name + " - showing only article titles again");
 			this.updateDom(100);
+<<<<<<< HEAD
+=======
+		} else if (notification === "ARTICLE_TOGGLE_FULL"){
+			if (this.config.showFullArticle){
+				this.activeItem++;
+				this.resetDescrOrFullArticleAndTimer();
+			} else {
+				this.showFullArticle();
+			}
+		} else if (notification === "ARTICLE_INFO_REQUEST"){
+			this.sendNotification("ARTICLE_INFO_RESPONSE", {
+				title:  this.newsItems[this.activeItem].title,
+				source: this.newsItems[this.activeItem].sourceTitle,
+				date:   this.newsItems[this.activeItem].pubdate,
+				desc:   this.newsItems[this.activeItem].description,
+				url:    this.getActiveItemURL()
+			})
+>>>>>>> b508a629e8a727358f1b88e3c7df842d14669ec4
 		} else {
 			Log.info(this.name + " - unknown notification, ignoring: " + notification);
 		}

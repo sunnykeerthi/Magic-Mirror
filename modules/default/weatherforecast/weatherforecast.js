@@ -142,6 +142,7 @@ Module.register("weatherforecast",{
 			iconCell.appendChild(icon);
 
 			var degreeLabel = "";
+<<<<<<< HEAD
 			if(this.config.scale) {
 				switch(this.config.units) {
 				case "metric":
@@ -149,6 +150,18 @@ Module.register("weatherforecast",{
 					break;
 				case "imperial":
 					degreeLabel = " &deg;F";
+=======
+			if (this.config.units === "metric" || this.config.units === "imperial") {
+				degreeLabel += "°";
+			}
+			if(this.config.scale) {
+				switch(this.config.units) {
+				case "metric":
+					degreeLabel += "C";
+					break;
+				case "imperial":
+					degreeLabel += "F";
+>>>>>>> b508a629e8a727358f1b88e3c7df842d14669ec4
 					break;
 				case "default":
 					degreeLabel = "K";

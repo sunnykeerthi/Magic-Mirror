@@ -1,6 +1,10 @@
 {
   "name": "magicmirror",
+<<<<<<< HEAD
   "version": "2.3.1",
+=======
+  "version": "2.7.1",
+>>>>>>> b508a629e8a727358f1b88e3c7df842d14669ec4
   "description": "The open source modular smart mirror platform.",
   "main": "js/electron.js",
   "scripts": {
@@ -59,7 +63,11 @@
     "body-parser": "^1.18.2",
     "chartjs-plugin-datalabels": "^0.5.0",
     "colors": "^1.1.2",
+<<<<<<< HEAD
     "electron": "^1.4.15",
+=======
+    "electron": "^3.0.13",
+>>>>>>> b508a629e8a727358f1b88e3c7df842d14669ec4
     "express": "^4.16.2",
     "express-ipfilter": "0.3.1",
     "feedme": "latest",
