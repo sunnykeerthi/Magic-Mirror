@@ -10,7 +10,7 @@ Module.register("duDashboard", {
 		return [
 			'jsforce.js',
 			'moment.js',
-			"modules/MMM-Chart/node_modules/chart.js/dist/Chart.bundle.min.js"
+			"Chart.bundle.min.js"
 
 		]
 	},
