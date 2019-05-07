@@ -36,7 +36,6 @@ Module.register("weatherforecast",{
 
 		appendLocationNameToHeader: true,
 		calendarClass: "calendar",
-		tableClass: "small",
 
 		roundTemp: false,
 
@@ -118,7 +117,7 @@ Module.register("weatherforecast",{
 		}
 
 		var table = document.createElement("table");
-		table.className = this.config.tableClass;
+		table.className = "small";
 
 		for (var f in this.forecast) {
 			var forecast = this.forecast[f];
@@ -142,14 +141,14 @@ Module.register("weatherforecast",{
 			icon.className = "wi weathericon " + forecast.icon;
 			iconCell.appendChild(icon);
 
-			var degreeLabel = "&deg;";
+			var degreeLabel = "";
 			if(this.config.scale) {
 				switch(this.config.units) {
 				case "metric":
-					degreeLabel += " C";
+					degreeLabel = " &deg;C";
 					break;
 				case "imperial":
-					degreeLabel += " F";
+					degreeLabel = " &deg;F";
 					break;
 				case "default":
 					degreeLabel = "K";
@@ -177,7 +176,7 @@ Module.register("weatherforecast",{
 					rainCell.innerHTML = "";
 				} else {
 					if(config.units !== "imperial") {
-						rainCell.innerHTML = parseFloat(forecast.rain).toFixed(1) + " mm";
+						rainCell.innerHTML = forecast.rain + " mm";
 					} else {
 						rainCell.innerHTML = (parseFloat(forecast.rain) / 25.4).toFixed(2) + " in";
 					}
@@ -334,15 +333,8 @@ Module.register("weatherforecast",{
 			var forecast = data.list[i];
 			this.parserDataWeather(forecast); // hack issue #1017
 
-			var day;
-			var hour;
-			if(!!forecast.dt_txt) {
-				day = moment(forecast.dt_txt, "YYYY-MM-DD hh:mm:ss").format("ddd");
-				hour = moment(forecast.dt_txt, "YYYY-MM-DD hh:mm:ss").format("H");
-			} else {
-				day = moment(forecast.dt, "X").format("ddd");
-				hour = moment(forecast.dt, "X").format("H");
-			}
+			var day = moment(forecast.dt, "X").format("ddd");
+			var hour = moment(forecast.dt, "X").format("H");
 
 			if (day !== lastDay) {
 				var forecastData = {
@@ -350,7 +342,7 @@ Module.register("weatherforecast",{
 					icon: this.config.iconTable[forecast.weather[0].icon],
 					maxTemp: this.roundValue(forecast.temp.max),
 					minTemp: this.roundValue(forecast.temp.min),
-					rain: forecast.rain
+					rain: this.roundValue(forecast.rain)
 				};
 
 				this.forecast.push(forecastData);

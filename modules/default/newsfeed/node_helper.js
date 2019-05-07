@@ -46,7 +46,7 @@ module.exports = NodeHelper.create({
 		var fetcher;
 		if (typeof self.fetchers[url] === "undefined") {
 			console.log("Create new news fetcher for url: " + url + " - Interval: " + reloadInterval);
-			fetcher = new Fetcher(url, reloadInterval, encoding, config.logFeedWarnings);
+			fetcher = new Fetcher(url, reloadInterval, encoding);
 
 			fetcher.onReceive(function(fetcher) {
 				self.broadcastFeeds();

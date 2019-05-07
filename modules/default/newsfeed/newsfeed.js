@@ -37,8 +37,7 @@ Module.register("newsfeed",{
 		startTags: [],
 		endTags: [],
 		prohibitedWords: [],
-		scrollLength: 500,
-		logFeedWarnings: false
+		scrollLength: 500
 	},
 
 	// Define required scripts.
@@ -68,7 +67,6 @@ Module.register("newsfeed",{
 
 		this.registerFeeds();
 
-		this.isShowingDescription = this.config.showDescription;
 	},
 
 	// Override socket notification handler.
@@ -90,7 +88,7 @@ Module.register("newsfeed",{
 
 		if (this.config.feedUrl) {
 			wrapper.className = "small bright";
-			wrapper.innerHTML = this.translate("configuration_changed");
+			wrapper.innerHTML = "The configuration options for the newsfeed module have changed.<br>Please check the documentation.";
 			return wrapper;
 		}
 
@@ -123,22 +121,22 @@ Module.register("newsfeed",{
 
 			//Remove selected tags from the beginning of rss feed items (title or description)
 
-			if (this.config.removeStartTags === "title" || this.config.removeStartTags === "both") {
+			if (this.config.removeStartTags == "title" || this.config.removeStartTags == "both") {
 
 				for (f=0; f<this.config.startTags.length;f++) {
-					if (this.newsItems[this.activeItem].title.slice(0,this.config.startTags[f].length) === this.config.startTags[f]) {
+					if (this.newsItems[this.activeItem].title.slice(0,this.config.startTags[f].length) == this.config.startTags[f]) {
 						this.newsItems[this.activeItem].title = this.newsItems[this.activeItem].title.slice(this.config.startTags[f].length,this.newsItems[this.activeItem].title.length);
 					}
 				}
 
 			}
 
-			if (this.config.removeStartTags === "description" || this.config.removeStartTags === "both") {
+			if (this.config.removeStartTags == "description" || this.config.removeStartTags == "both") {
 
-				if (this.isShowingDescription) {
+				if (this.config.showDescription) {
 					for (f=0; f<this.config.startTags.length;f++) {
-						if (this.newsItems[this.activeItem].description.slice(0,this.config.startTags[f].length) === this.config.startTags[f]) {
-							this.newsItems[this.activeItem].description = this.newsItems[this.activeItem].description.slice(this.config.startTags[f].length,this.newsItems[this.activeItem].description.length);
+						if (this.newsItems[this.activeItem].description.slice(0,this.config.startTags[f].length) == this.config.startTags[f]) {
+							this.newsItems[this.activeItem].title = this.newsItems[this.activeItem].description.slice(this.config.startTags[f].length,this.newsItems[this.activeItem].description.length);
 						}
 					}
 				}
@@ -149,14 +147,14 @@ Module.register("newsfeed",{
 
 			if (this.config.removeEndTags) {
 				for (f=0; f<this.config.endTags.length;f++) {
-					if (this.newsItems[this.activeItem].title.slice(-this.config.endTags[f].length)===this.config.endTags[f]) {
+					if (this.newsItems[this.activeItem].title.slice(-this.config.endTags[f].length)==this.config.endTags[f]) {
 						this.newsItems[this.activeItem].title = this.newsItems[this.activeItem].title.slice(0,-this.config.endTags[f].length);
 					}
 				}
 
-				if (this.isShowingDescription) {
+				if (this.config.showDescription) {
 					for (f=0; f<this.config.endTags.length;f++) {
-						if (this.newsItems[this.activeItem].description.slice(-this.config.endTags[f].length)===this.config.endTags[f]) {
+						if (this.newsItems[this.activeItem].description.slice(-this.config.endTags[f].length)==this.config.endTags[f]) {
 							this.newsItems[this.activeItem].description = this.newsItems[this.activeItem].description.slice(0,-this.config.endTags[f].length);
 						}
 					}
@@ -171,7 +169,7 @@ Module.register("newsfeed",{
 				wrapper.appendChild(title);
 			}
 
-			if (this.isShowingDescription) {
+			if (this.config.showDescription) {
 				var description = document.createElement("div");
 				description.className = "small light" + (!this.config.wrapDescription ? " no-wrap" : "");
 				var txtDesc = this.newsItems[this.activeItem].description;
@@ -182,10 +180,10 @@ Module.register("newsfeed",{
 			if (this.config.showFullArticle) {
 				var fullArticle = document.createElement("iframe");
 				fullArticle.className = "";
-				fullArticle.style.width = "100vw";
+				fullArticle.style.width = "100%";
 				// very large height value to allow scrolling
-				fullArticle.height = "3000";
-				fullArticle.style.height = "3000";
+				fullArticle.height = "10000";
+				fullArticle.style.height = "10000";
 				fullArticle.style.top = "0";
 				fullArticle.style.left = "0";
 				fullArticle.style.border = "none";
@@ -325,7 +323,7 @@ Module.register("newsfeed",{
 	},
 
 	resetDescrOrFullArticleAndTimer: function() {
-		this.isShowingDescription = this.config.showDescription;
+		this.config.showDescription = false;
 		this.config.showFullArticle = false;
 		this.scrollPosition = 0;
 		// reset bottom bar alignment
@@ -338,7 +336,7 @@ Module.register("newsfeed",{
 
 	notificationReceived: function(notification, payload, sender) {
 		Log.info(this.name + " - received notification: " + notification);
-		if(notification === "ARTICLE_NEXT"){
+		if(notification == "ARTICLE_NEXT"){
 			var before = this.activeItem;
 			this.activeItem++;
 			if (this.activeItem >= this.newsItems.length) {
@@ -347,7 +345,7 @@ Module.register("newsfeed",{
 			this.resetDescrOrFullArticleAndTimer();
 			Log.info(this.name + " - going from article #" + before + " to #" + this.activeItem + " (of " + this.newsItems.length + ")");
 			this.updateDom(100);
-		} else if(notification === "ARTICLE_PREVIOUS"){
+		} else if(notification == "ARTICLE_PREVIOUS"){
 			var before = this.activeItem;
 			this.activeItem--;
 			if (this.activeItem < 0) {
@@ -358,52 +356,35 @@ Module.register("newsfeed",{
 			this.updateDom(100);
 		}
 		// if "more details" is received the first time: show article summary, on second time show full article
-		else if(notification === "ARTICLE_MORE_DETAILS"){
+		else if(notification == "ARTICLE_MORE_DETAILS"){
 			// full article is already showing, so scrolling down
-			if(this.config.showFullArticle === true){
+			if(this.config.showFullArticle == true){
 				this.scrollPosition += this.config.scrollLength;
 				window.scrollTo(0, this.scrollPosition);
 				Log.info(this.name + " - scrolling down");
 				Log.info(this.name + " - ARTICLE_MORE_DETAILS, scroll position: " + this.config.scrollLength);
 			}
+			// display full article
 			else {
-				this.showFullArticle();
+				this.config.showDescription = !this.config.showDescription;
+				this.config.showFullArticle = !this.config.showDescription;
+				// make bottom bar align to top to allow scrolling
+				if(this.config.showFullArticle == true){
+					document.getElementsByClassName("region bottom bar")[0].style.bottom = "inherit";
+					document.getElementsByClassName("region bottom bar")[0].style.top = "-90px";
+				}
+				clearInterval(timer);
+				timer = null;
+				Log.info(this.name + " - showing " + this.config.showDescription ? "article description" : "full article");
+				this.updateDom(100);
 			}
-		} else if(notification === "ARTICLE_SCROLL_UP"){
-			if(this.config.showFullArticle === true){
-				this.scrollPosition -= this.config.scrollLength;
-				window.scrollTo(0, this.scrollPosition);
-				Log.info(this.name + " - scrolling up");
-				Log.info(this.name + " - ARTICLE_SCROLL_UP, scroll position: " + this.config.scrollLength);
-			}
-		} else if(notification === "ARTICLE_LESS_DETAILS"){
+		} else if(notification == "ARTICLE_LESS_DETAILS"){
 			this.resetDescrOrFullArticleAndTimer();
 			Log.info(this.name + " - showing only article titles again");
 			this.updateDom(100);
-		} else if (notification === "ARTICLE_TOGGLE_FULL"){
-			if (this.config.showFullArticle){
-				this.activeItem++;
-				this.resetDescrOrFullArticleAndTimer();
-			} else {
-				this.showFullArticle();
-			}
 		} else {
 			Log.info(this.name + " - unknown notification, ignoring: " + notification);
 		}
 	},
-
-	showFullArticle: function() {
-		this.isShowingDescription = !this.isShowingDescription;
-		this.config.showFullArticle = !this.isShowingDescription;
-		// make bottom bar align to top to allow scrolling
-		if(this.config.showFullArticle === true){
-			document.getElementsByClassName("region bottom bar")[0].style.bottom = "inherit";
-			document.getElementsByClassName("region bottom bar")[0].style.top = "-90px";
-		}
-		clearInterval(timer);
-		timer = null;
-		Log.info(this.name + " - showing " + this.isShowingDescription ? "article description" : "full article");
-		this.updateDom(100);
-	}
 
 });

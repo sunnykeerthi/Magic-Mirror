@@ -29,8 +29,7 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 		var opts = {
 			headers: {
 				"User-Agent": "Mozilla/5.0 (Node.js "+ nodeVersion + ") MagicMirror/"  + global.version +  " (https://github.com/MichMich/MagicMirror/)"
-			},
-			gzip: true
+			}
 		};
 
 		if (auth) {
@@ -91,9 +90,6 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 					var endDate;
 					if (typeof event.end !== "undefined") {
 						endDate = eventDate(event, "end");
-					} else if(typeof event.duration !== "undefined") {
-						dur=moment.duration(event.duration);
-						endDate = startDate.clone().add(dur);
 					} else {
 						if (!isFacebookBirthday) {
 							endDate = startDate;
@@ -123,17 +119,11 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 					for (var f in excludedEvents) {
 						var filter = excludedEvents[f],
 							testTitle = title.toLowerCase(),
-							until = null,
-							useRegex = false,
-							regexFlags = "g";
+							until = null;
 
 						if (filter instanceof Object) {
 							if (typeof filter.until !== "undefined") {
 								until = filter.until;
-							}
-
-							if (typeof filter.regex !== "undefined") {
-								useRegex = filter.regex;
 							}
 
 							// If additional advanced filtering is added in, this section
@@ -142,10 +132,6 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 							if (filter.caseSensitive) {
 								filter = filter.filterBy;
 								testTitle = title;
-							} else if (useRegex) {
-								filter = filter.filterBy;
-								testTitle = title;
-								regexFlags += "i";
 							} else {
 								filter = filter.filterBy.toLowerCase();
 							}
@@ -153,7 +139,7 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 							filter = filter.toLowerCase();
 						}
 
-						if (testTitleByFilter(testTitle, filter, useRegex, regexFlags)) {
+						if (testTitle.includes(filter)) {
 							if (until) {
 								dateFilter = until;
 							} else {
@@ -171,16 +157,8 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 					var geo = event.geo || false;
 					var description = event.description || false;
 
-					if (typeof event.rrule != "undefined" && event.rrule != null && !isFacebookBirthday) {
+					if (typeof event.rrule != "undefined" && !isFacebookBirthday) {
 						var rule = event.rrule;
-
-						// can cause problems with e.g. birthdays before 1900
-						if(rule.origOptions && rule.origOptions.dtstart && rule.origOptions.dtstart.getFullYear() < 1900 ||
-							rule.options && rule.options.dtstart && rule.options.dtstart.getFullYear() < 1900){
-							rule.origOptions.dtstart.setYear(1900);
-							rule.options.dtstart.setYear(1900);
-						}
-
 						var dates = rule.between(today, future, true, limitFunction);
 
 						for (var d in dates) {
@@ -285,7 +263,8 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 		var start = event.start || 0;
 		var startDate = new Date(start);
 		var end = event.end || 0;
-		if (((end - start) % (24 * 60 * 60 * 1000)) === 0 && startDate.getHours() === 0 && startDate.getMinutes() === 0) {
+
+		if (end - start === 24 * 60 * 60 * 1000 && startDate.getHours() === 0 && startDate.getMinutes() === 0) {
 			// Is 24 hours, and starts on the middle of the night.
 			return true;
 		}
@@ -314,22 +293,6 @@ var CalendarFetcher = function(url, reloadInterval, excludedEvents, maximumEntri
 
 		return false;
 	};
-
-	var testTitleByFilter = function (title, filter, useRegex, regexFlags) {
-		if (useRegex) {
-			// Assume if leading slash, there is also trailing slash
-			if (filter[0] === "/") {
-				// Strip leading and trailing slashes
-				filter = filter.substr(1).slice(0, -1);
-			}
-
-			filter = new RegExp(filter, regexFlags);
-
-			return filter.test(title);
-		} else {
-			return title.includes(filter);
-		}
-	}
 
 	/* public methods */
 

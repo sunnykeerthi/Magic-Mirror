@@ -2,10 +2,6 @@
 The `newsfeed ` module is one of the default modules of the MagicMirror.
 This module displays news headlines based on an RSS feed. Scrolling through news headlines happens time-based (````updateInterval````), but can also be controlled by sending news feed specific notifications to the module.
 
-## Screenshot
-- News Feed Screenshot using the NYT
-![NYT News Feed Screenshot](newsfeed_screenshot.png)
-
 ## Using the module
 
 ### Configuration
@@ -45,7 +41,6 @@ MagicMirror's [notification mechanism](https://github.com/MichMich/MagicMirror/t
 | `ARTICLE_PREVIOUS`      | Shows the previous news title (hiding the summary or previously fully displayed article)
 | `ARTICLE_MORE_DETAILS`  | When received the _first time_, shows the corresponding description of the currently displayed news title. <br> The module expects that the module's configuration option `showDescription` is set to `false` (default value). <br><br> When received a _second consecutive time_, shows the full news article in an IFRAME. <br> This requires that the news page can be embedded in an IFRAME, e.g. doesn't have the HTTP response header [X-Frame-Options](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options) set to e.g. `DENY`.<br><br>When received the _next consecutive times_, reloads the page and scrolls down by `scrollLength` pixels to paginate through the article.
 | `ARTICLE_LESS_DETAILS`  | Hides the summary or full news article and only displays the news title of the currently viewed news item.
-| `ARTICLE_TOGGLE_FULL`   | Toogles article in fullscreen.
 
 Note the payload of the sent notification event is ignored.
 
@@ -85,7 +80,6 @@ The following properties can be configured:
 | `endTags`          | List the tags you would like to have removed at the end of the feed item <br><br> **Possible values:** `['TAG']` or `['TAG1','TAG2',...]`
 | `prohibitedWords` | Remove news feed item if one of these words is found anywhere in the title (case insensitive and greedy matching) <br><br> **Possible values:** `['word']` or `['word1','word2',...]`
 | `scrollLength` | Scrolls the full news article page by a given number of pixels when a `ARTICLE_MORE_DETAILS` notification is received and the full news article is already displayed.<br><br> **Possible values:** `1` or `10000` <br> **Default value:** `500`
-| `logFeedWarnings` | Log warnings when there is an error parsing a news article. <br><br> **Possible values:** `true` or `false` <br> **Default value:** `false`
 
 The `feeds` property contains an array with multiple objects. These objects have the following properties:
 
